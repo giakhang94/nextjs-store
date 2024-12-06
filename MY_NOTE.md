@@ -345,3 +345,30 @@ export default LoadingContainer;
   4. `URLSearchParams()`
 - hạn chế đưa mấy cái fetch vô `useEffect` dễ bị lỗi dư 1 cái khi mới mount lại, nhứt là đối với các global component.
 - Ví dụ search bar, là cái global component, trang nào nso cũng có, cứ mỗi trang load lại mà nó kiểm tra search value rồi navigate đi chỗ này chỗ kia thì bị lỗ
+
+### Toaster component
+
+-> import {Toaster} from '@/components/ui/toaster'
+-> Vô `app/providers`, để <Toaster/> cùng cấp với <Theme-Provider/>
+
+### clerk
+
+-> làm theo docs.
+Lưu ý chính:
+
+1. instal clerk/nextjs
+2. create application on clerk.com
+3. copy secret key paste to .env.local
+4. go to `app/layout.tsx`
+
+- `import {ClerkProvider} from '@clerk/nextjs`
+- wrap all the layout by the `ClerkProvider`
+- create `root/middleware.ts`
+
+5. Để tạo avatar cho user
+
+- tạo component user avt
+- `import {currentUser} from '@clerk/nextjs/server`
+- `const user = await currentUser()`
+- user is an object contains many properties, such as imageUrl...
+- then use this to render user avatar
