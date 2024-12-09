@@ -372,3 +372,111 @@ Lưu ý chính:
 - `const user = await currentUser()`
 - user is an object contains many properties, such as imageUrl...
 - then use this to render user avatar
+
+### Middleware
+
+1. dùng cho clerk để chặn các router cần phải phân quyền, login, admin...
+
+- tạo 1 cái routeMacher mới
+  vd: `const isAdminRoute = createRouteMatcher(["/admin(.*)"])
+- cái routeMacher này sẽ bắt được tất cả `request` liên quan tới mấy `href` được liệt kê trong array
+  `isAdminRoute(req)`
+- dùng hàm `clerkMiddlewre((auth, req) => {})`
+- xét điều kiện gì đó, nếu cần bảo vệ route, chặn này kia phân quền
+  => thì dùng `auth().protect()`
+  => ví dụ xét `nếu là rout của admin và không phải admin` thì chặn nó
+  ```js
+  if (isAdminRoute(req) && !isAdminID) auth().protect();
+  ```
+- ngoài ra `auth()` còn lấy dc rất nhiều thông tin, ví dụ như `userId`
+
+- `auth from '@clerk/nextjs/server'` này có thể import đi muôn nơi để lấy thông tin user
+
+### faker-js faker library mock data
+
+### Lưu ý truy cập root/public/images/photo.jpg
+
+=> bỏ qua thu mực public trên url. Chỉ nhập /images/photo.jpg là được
+
+### Form action, Form data, validation validate
+
+- const [state, formAction] = useFormState()
+- `const rawData = Object.fromEntries(formData)`
+- validation: install zod library: zodSchema, z.string()... errror handler error.errors.message...
+  -> z.parse(), z.safeParse()
+
+```js
+//pay attention on these two arguments of this function
+export const createProductsAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  //logic here
+};
+```
+
+### validate image
+
+```js
+export const imageSchema = z.object({
+  image: validateImageFile(),
+});
+
+function validateImageFile() {
+  const maxUploadSize = 1024 * 1024;
+  const acceptdFileTypes = ["image/"];
+  return z
+    .instanceof(File)
+    .refine((file) => {
+      return !file || file.size <= maxUploadSize;
+    }, "file size must be less than 1MB")
+    .refine((file) => {
+      return (
+        !file || acceptdFileTypes.some((type) => file.type.startsWith(type))
+      );
+    }, "File must be an Image");
+}
+```
+
+### Store image on supabase bucket
+
+1. go to supabase, create new bucket
+2. go to this new bucket, create new policy
+3. go to setting => copy supabase url and supabase key
+4. `install @supabase/supabase-js`
+
+```js
+import { createClient } from "@supabase/supabase-js";
+
+const bucket = "main-bucket";
+
+export const supabase = createClient(
+  process.env.SUPABASE_URL as string,
+  process.env.SUPABASE_KEY as string
+);
+
+export const uploadImage = async (image: File) => {
+  const timestamp = Date.now();
+  const newName = `${timestamp}-${image.name}`;
+  const { data } = await supabase.storage
+    .from(bucket)
+    .upload(newName, image, { cacheControl: "3600" });
+
+  if (!data) throw new Error("Image upload failed");
+  return supabase.storage.from(bucket).getPublicUrl(newName).data.publicUrl;
+};
+```
+
+in utils/action.ts
+
+```js
+//createProdcutAction
+//ad this code
+    const file = formData.get("image") as File;
+    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
+    const fullPath = await uploadImage(validatedFile.image);
+```
+
+### backup
+
+other user account: khangvcsc@gmail.com - khangvcsc

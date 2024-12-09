@@ -1,7 +1,7 @@
-"use client";
-import { FaHeart } from "react-icons/fa";
-import { Button } from "../ui/button";
-import { useState } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { CardSignInButton } from "../form/Buttons";
+import { fetchFavoriteId } from "@/utils/actions";
+import FavoriteToggleForm from "./FavoriteToggleForm";
 
 interface Props {
   className?: string;
@@ -9,20 +9,15 @@ interface Props {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function FavoriteToggleBtn({ productId, className }: Props) {
-  const [favorite, setFavorite] = useState(false);
-  const handleAddFavorite = (): void => {
-    setFavorite((prev) => !prev);
-  };
+async function FavoriteToggleBtn({ productId, className }: Props) {
+  const { userId } = auth();
+  if (!userId) return <CardSignInButton />;
+  const favoriteId = await fetchFavoriteId({ productId });
   return (
-    <Button
-      onClick={handleAddFavorite}
-      size="icon"
-      variant="outline"
-      className={`p-2 cursor-pointer ${className}`}
-    >
-      <FaHeart className={`${favorite ? "text-blue-500" : ""}`} />
-    </Button>
+    <FavoriteToggleForm
+      favoriteId={favoriteId}
+      productId={productId}
+    ></FavoriteToggleForm>
   );
 }
 
