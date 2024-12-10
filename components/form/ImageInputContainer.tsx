@@ -35,7 +35,7 @@ function ImageInputContainer(props: ImageInputContainerProps) {
           setUpdateFormVisible((prev) => !prev);
         }}
       >
-        Change Image
+        {!isUpdateFormVisible ? "Change Image" : "Close Change Image"}
       </Button>
       {isUpdateFormVisible && (
         <div className="max-w-md mt-4">

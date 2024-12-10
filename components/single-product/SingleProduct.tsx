@@ -1,4 +1,4 @@
-import { fetchSingleProduct } from "@/utils/actions";
+import { fetchSingleProduct, findExistingReview } from "@/utils/actions";
 import BreadCrumbs from "./BreadCrumbs";
 import ProductRating from "./ProductRating";
 import Image from "next/image";
@@ -6,11 +6,18 @@ import { formatCurrency } from "@/utils/format";
 import { Separator } from "../ui/separator";
 import FavoriteToggleBtn from "../products/FavoriteToggleBtn";
 import AddToCart from "./AddToCart";
+import ShareButton from "./ShareButton";
+import SubmitReview from "../reviews/SubmitReview";
+import ProductReviews from "../reviews/ProductReviews";
+import { auth } from "@clerk/nextjs/server";
 interface Props {
   id: string;
 }
 async function SingleProduct({ id }: Props) {
   const product = await fetchSingleProduct(id);
+  const user = auth();
+  const reviewDoesNotExist =
+    user.userId && !(await findExistingReview(user.userId, id));
   if (!product) return <div>not found</div>;
   return (
     <div className="">
@@ -33,7 +40,10 @@ async function SingleProduct({ id }: Props) {
             <p className="font-semi-bold tracking-[1px] text-xl uppercase">
               {product.name}
             </p>
-            <FavoriteToggleBtn productId={product.id} className="" />
+            <div className="flex items-center mx-2 gap-x-2">
+              <FavoriteToggleBtn productId={product.id} className="" />
+              <ShareButton productId={product.id} name={product.name} />
+            </div>
           </div>
           <ProductRating productId={product.id} />
           <p className="text-lg font-semibold">{product.company}</p>
@@ -44,6 +54,8 @@ async function SingleProduct({ id }: Props) {
           <AddToCart className="mt-4 self-start items-end" />
         </div>
       </section>
+      <ProductReviews productId={id} />
+      {reviewDoesNotExist && <SubmitReview productId={id} />}
     </div>
   );
 }

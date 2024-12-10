@@ -5,6 +5,7 @@ import FormInput from "@/components/form/FormInput";
 import ImageInputContainer from "@/components/form/ImageInputContainer";
 import PriceInput from "@/components/form/PriceInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
+import { Separator } from "@/components/ui/separator";
 import {
   fetchAdminProductDetails,
   updateProductAction,
@@ -29,6 +30,7 @@ async function EditProductPage({ params }: { params: { id: string } }) {
           <input type="hidden" name="id" value={id} />
           <input type="hidden" name="url" value={product.image} />
         </ImageInputContainer>
+        <Separator className="h-[1px] bg-gray-300" />
         {/* other fields input container */}
         <FormContainer action={updateProductAction}>
           <div className="grid gap-4 md:grid=cols-2 my-4">
