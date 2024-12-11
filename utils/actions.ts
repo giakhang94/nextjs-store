@@ -501,7 +501,7 @@ export const addToCartAction = async (preState: any, formData: FormData) => {
     await updateOrCreateCartItem({ productId, cartId: cart.id, amount });
     await updateCart(cart);
   } catch (error) {
-    renderError(error);
+    return renderError(error);
   }
   redirect("/cart");
 };
