@@ -21,6 +21,8 @@ model Product {
   clerkId String
   favorite Favorite[]
   reviews Review[]
+  cartItem CartItem[]
+
 }
 
 model Favorite {
@@ -46,4 +48,29 @@ model Review {
   //tham chiếu tới thằng [id] của bảng product (bảng được tham chiếu)
   //phải thêm `reviews Review[]` vao model Product
   productId String
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  clerkId  String
+  cartItems CartItem[]
+  numItemsInCart Int @default(0)
+  cartTotal Int @default(0)
+  shipping Int @default(5)
+  tax Int @default(0)
+  taxRate Float @default(0.1)
+  orderTotal Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  cart     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId   String
+  amount  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

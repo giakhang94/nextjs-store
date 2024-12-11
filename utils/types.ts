@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type actionFunction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prevState: any,
@@ -21,3 +23,7 @@ export type CartState = {
   tax: number;
   orderTotal: number;
 };
+
+export type CartItemWithProduct = Prisma.CartItemGetPayload<{
+  include: { product: true };
+}>;

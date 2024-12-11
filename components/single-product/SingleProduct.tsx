@@ -51,7 +51,10 @@ async function SingleProduct({ id }: Props) {
           <p className="text-justify text-muted-foreground overflow-hidden">
             {product.description}
           </p>
-          <AddToCart className="mt-4 self-start items-end" />
+          <AddToCart
+            className="mt-4 self-start items-end"
+            productId={product.id}
+          />
         </div>
       </section>
       <ProductReviews productId={id} />

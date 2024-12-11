@@ -104,3 +104,14 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
     </Button>
   );
 };
+
+//cart
+export const ProductSignInButton = () => {
+  return (
+    <SignInButton mode="modal">
+      <Button type="button" className="mt-8 capitalize">
+        sign in To Buy
+      </Button>
+    </SignInButton>
+  );
+};

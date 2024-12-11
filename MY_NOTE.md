@@ -477,6 +477,11 @@ in utils/action.ts
     const fullPath = await uploadImage(validatedFile.image);
 ```
 
+### Luu y
+
+- 'use server' => getCurrentUser()
+- 'use client' => useAuth()
+
 ### backup
 
 other user account: khangvcsc@gmail.com - khangvcsc
