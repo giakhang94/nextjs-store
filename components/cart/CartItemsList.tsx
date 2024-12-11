@@ -1,5 +1,5 @@
+"use client";
 import { CartItemWithProduct } from "@/utils/types";
-import React from "react";
 import { Card } from "../ui/card";
 import { FirstColumn, FourthColumn, SecondColumn } from "./CartItemColums";
 import ThirdColumn from "./ThirdColumn";

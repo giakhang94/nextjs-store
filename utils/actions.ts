@@ -1,5 +1,4 @@
 "use server";
-
 import db from "@/utils/db";
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -460,6 +459,9 @@ export const updateCart = async (cart: Cart) => {
     include: {
       product: true,
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
   let numItemsInCart = 0;
   let cartTotal = 0;
@@ -484,7 +486,7 @@ export const updateCart = async (cart: Cart) => {
     },
     include: inCLudeProductClause,
   });
-  return currentCart;
+  return { cartItems, currentCart };
 };
 
 //add an item to the cart by userid
